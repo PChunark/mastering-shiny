@@ -52,12 +52,32 @@ ui <- fluidPage(
   ),
   fluidRow(
   actionButton("eat", "Eat me!", class = "btn-block")
-  )
+  ),
+
+# Text output #####
+textOutput("text"),
+verbatimTextOutput("code"),
+# Tables #####
+tableOutput("static"),
+dataTableOutput("dynamic"),
+# Plots #####
+plotOutput(outputId = "plot", width = "400px")
   
 )
 
 server <- function(input, output, session){
-  
+  # Text output
+  output$text <- renderText({
+    "Hello friend!"
+  })
+  output$code <- renderPrint({
+    summary(1:10)
+  })
+  # Table output
+  output$static <- renderTable(head(mtcars))
+  output$dynamic <- renderDataTable(mtcars, options = list(pageLength = 5))
+  # Plot 
+  output$plot <- renderPlot(plot(1:5), res = 96)
 }
 
 shinyApp(ui = ui, server = server)
